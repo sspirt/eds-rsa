@@ -146,8 +146,8 @@ document.getElementById('btn-compute-keys').addEventListener('click', () => {
     const phi = (p - 1n) * (q - 1n);
     const hintD = document.getElementById('hint-d');
     const inpD = document.getElementById('inp-d');
-    if (dNum <= 0n || dNum >= phi) {
-        hintD.textContent = `d должно быть в диапазоне от 0 до φ(r)=${phi}`;
+    if (dNum < 0n) {
+        hintD.textContent = `d должно быть положительным числом`;
         hintD.className = 'field-hint';
         inpD.classList.add('error');
         return;
