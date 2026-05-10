@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>ЭЦП RSA</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>Электронная цифровая подпись RSA</h1>
+</header>
+
+<main>
+  <section class="card">
+    <h2 class="card-title">Параметры ключей</h2>
+    <div class="params-grid">
+      <div class="form-group">
+        <label for="inp-p">Простое число <strong>p</strong></label>
+        <input type="number" id="inp-p" class="mono" placeholder="Например: 17" min="2" autocomplete="off">
+        <span class="field-hint" id="hint-p"></span>
+      </div>
+      <div class="form-group">
+        <label for="inp-q">Простое число <strong>q</strong></label>
+        <input type="number" id="inp-q" class="mono" placeholder="Например: 19" min="2" autocomplete="off">
+        <span class="field-hint" id="hint-q"></span>
+      </div>
+      <div class="form-group">
+        <label for="inp-d">Закрытый ключ <strong>d</strong></label>
+        <input type="number" id="inp-d" class="mono" placeholder="Например: 67" min="1" autocomplete="off">
+        <span class="field-hint" id="hint-d"></span>
+      </div>
+    </div>
+    <button id="btn-compute-keys" type="button" class="btn-secondary">Вычислить параметры</button>
+
+    <div id="computed-keys" class="pubkey-panel hidden">
+      <div class="kv-row"><span>r = p · q</span><code id="out-r">—</code></div>
+      <div class="kv-row"><span>φ(r) = (p−1)·(q−1)</span><code id="out-phi">—</code></div>
+      <div class="kv-row"><span>Открытая экспонента e</span><code id="out-e">—</code></div>
+      <div class="kv-row highlight"><span>Открытый ключ K<sub>o</sub> = (e, r)</span><code id="out-ko">—</code></div>
+      <div class="kv-row highlight-red"><span>Закрытый ключ K<sub>c</sub> = (d, r)</span><code id="out-kc">—</code></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 class="card-title">Исходный файл</h2>
+    <div class="radio-row">
+      <label class="radio-label"><input type="radio" name="src" value="text" checked> Ввести текст</label>
+      <label class="radio-label"><input type="radio" name="src" value="file"> Открыть файл</label>
+    </div>
+
+    <div id="src-text-area" class="form-group">
+      <textarea id="inp-message" class="mono" rows="4" placeholder="Введите текст сообщения..."></textarea>
+    </div>
+
+    <div id="src-file-area" class="form-group hidden">
+      <div class="file-row">
+        <button id="btn-open-file" type="button" class="btn-secondary">Открыть файл</button>
+        <span class="file-name" id="file-name">Файл не выбран</span>
+        <input type="file" id="inp-file" style="display:none">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Хеш сообщения <strong>h(M)</strong></label>
+      <div class="hash-display mono" id="out-hash">—</div>
+    </div>
+  </section>
+
+  <div class="btn-group">
+    <button id="btn-sign" type="button" class="btn-primary">Подписать и сохранить файл</button>
+  </div>
+
+  <section class="card hidden" id="sign-result">
+    <h2 class="card-title">Результат подписания</h2>
+    <div class="kv-row"><span>Хеш m = h(M)</span><code id="res-hash">—</code></div>
+    <div class="kv-row highlight"><span>ЭЦП S = m<sup>d</sup> mod r</span><code id="res-sig">—</code></div>
+    <div class="steps-block mono" id="sign-steps"></div>
+  </section>
+
+  <section class="card">
+    <h2 class="card-title">Проверка подписи</h2>
+    <div class="params-grid">
+      <div class="form-group">
+        <label for="ver-e">Открытая экспонента <strong>e</strong></label>
+        <input type="number" id="ver-e" class="mono" placeholder="Например: 43" min="1" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label for="ver-r">Модуль <strong>r</strong></label>
+        <input type="number" id="ver-r" class="mono" placeholder="Например: 323" min="1" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="file-row">
+      <button id="btn-open-ver" type="button" class="btn-secondary">Открыть подписанный файл</button>
+      <span class="file-name" id="ver-file-name">Файл не выбран</span>
+      <input type="file" id="ver-file" style="display:none">
+    </div>
+
+    <div class="btn-group" style="margin-top:16px;">
+      <button id="btn-verify" type="button" class="btn-primary btn-verify">Проверить подпись</button>
+    </div>
+
+    <div id="verify-result" class="hidden" style="margin-top:16px;">
+      <div class="kv-row"><span>Извлечённая подпись S</span><code id="vres-sig">—</code></div>
+      <div class="kv-row"><span>Хеш полученного сообщения h(M')</span><code id="vres-hash-new">—</code></div>
+      <div class="kv-row"><span>Расшифровка подписи S<sup>e</sup> mod r</span><code id="vres-hash-dec">—</code></div>
+      <div class="verify-verdict hidden" id="verify-verdict"></div>
+      <div class="steps-block mono" id="verify-steps"></div>
+    </div>
+  </section>
+
+</main>
+
+<div id="toast"></div>
+<script src="index.js"></script>
+</body>
+</html>
